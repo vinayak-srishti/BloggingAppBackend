@@ -1,0 +1,116 @@
+const UserSchema = require('../Schema/UserSchema')
+
+const UserRegistration = (req, res) => {
+    let User = new UserSchema({
+        Name: req.body.Name,
+        Email: req.body.Email,
+        PhoneNo: req.body.PhoneNo,
+        DOB: req.body.DOB,
+        Password: req.body.Password
+    })
+    User.save()
+        .then((result) => {
+            res.json({
+                message: "User Registration Succesfully",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+const UserLogin = (req, res) => {
+    const { Email, Password } = req.body
+    UserSchema.findOne({ Email, Password })
+        .then((result) => {
+            if (!result) {
+                res.json({
+                    Message: "Invalid Email or Password"
+                });
+            } else {
+                if (result.isActive == true) {
+                    res.json({
+                        Message: "User Login Successfully",
+                        data: result
+                    });
+                }
+            }
+
+        })
+        .catch((error) => {
+            console.log(error);
+
+        })
+}
+const ForgotPassword = (req, res) => {
+    UserSchema.findOneAndUpdate({ Email: req.body.Email }, { Password: req.body.Password }, { new: true })
+        .then((result) => {
+            res.json({
+                message: "Password Forgotted",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+const ViewAllUsers = (req, res) => {
+    UserSchema.find()
+        .then((result) => {
+            res.json({
+                message: "View All Users",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+const ViewOneUser = (req, res) => {
+    UserSchema.find({ _id: req.params.id })
+        .then((result) => {
+            res.json({
+                message: "View A Users",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+
+
+}
+const EditUser = (req, res) => {
+    let datas = {
+        Name: req.body.Name,
+        Email: req.body.Email,
+        PhoneNo: req.body.PhoneNo,
+        DOB: req.body.DOB
+    }
+    UserSchema.findByIdAndUpdate({ _id: req.body.id }, datas, { new: true })
+        .then((result) => {
+            res.json({
+                message: "User Data Updated",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+const DeleteUser = (req, res) => {
+    UserSchema.findByIdAndUpdate({ _id: req.body.id }, { isActive: false })
+        .then((result) => {
+            res.json({
+                message: "User Deleted",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+module.exports = { UserRegistration, UserLogin, ForgotPassword, ViewAllUsers, ViewOneUser, EditUser, DeleteUser }
