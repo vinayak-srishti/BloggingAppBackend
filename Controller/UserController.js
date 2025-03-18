@@ -1,5 +1,5 @@
 const UserSchema = require('../Schema/UserSchema')
-
+  
 const UserRegistration = (req, res) => {
     let User = new UserSchema({
         Name: req.body.Name,
@@ -113,4 +113,4 @@ const DeleteUser = (req, res) => {
             console.log(error);
         })
 }
-module.exports = { UserRegistration, UserLogin, ForgotPassword, ViewAllUsers, ViewOneUser, EditUser, DeleteUser }
+module.exports = { UserRegistration,UserLogin, ForgotPassword, ViewAllUsers, ViewOneUser, EditUser, DeleteUser }

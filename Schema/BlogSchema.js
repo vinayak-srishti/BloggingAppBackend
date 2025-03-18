@@ -1,10 +1,11 @@
 const mongoose=require('mongoose')
 
 const BlogSchema=new mongoose.Schema({
-    Title:{type:String},
-    Image:{type:Object},
-    SubTitle:{type:String},
-    Discription:{type:String},
-    UserId:{type:mongoose.Schema.Types.ObjectId,ref:'Users'}
+    Title:{type:String, required:true},
+    image:{type:Object, required:true},
+    SubTitle:{type:String, required:true},
+    Discription:{type:String, required:true},
+    UserId:{type:mongoose.Schema.Types.ObjectId, ref:'Users', required:true}
 })
+
 module.exports=mongoose.model('Blogs',BlogSchema)

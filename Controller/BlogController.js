@@ -1,27 +1,41 @@
 const BlogSchema = require('../Schema/BlogSchema')
+const multer = require('multer')
+
+
+const storage = multer.diskStorage({
+    destination: function (req, res, cb) {
+        cb(null, "./upload");
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+const BlogImages = multer({ storage: storage }).single("image");
 
 const AddBlog = (req, res) => {
     let Blog = new BlogSchema({
         Title: req.body.Title,
-        Image: req.body.Image,
+        image: req.file.filename,
         SubTitle: req.body.SubTitle,
         Discription: req.body.Discription,
-        UserId: req.params.UserId
+        UserId: req.params.id
     })
+
     Blog.save()
-    .then((result)=>{
-        return BlogSchema.findById(result._id).populate('UserId')
-    })
-    .then((result)=>{
-        res.json({
-            message:"Blog Added",
-            data:result
+        .then((result) => {
+            return BlogSchema.findById(result._id).populate('UserId')
         })
-    })
-    .catch((error)=>{
-      console.log(error);
-      
-    })
+        .then((result) => {
+            res.json({
+                message: "Blog Added",
+                data: result
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+
+        })
 }
 const ViewAllBlogs = (req, res) => {
     BlogSchema.find()
@@ -41,12 +55,16 @@ const EditBlog = (req, res) => {
         Title: req.body.Title,
         SubTitle: req.body.SubTitle,
         Discription: req.body.Discription,
-        Image: req.body.Image
+        image: req.file
     }
-    BlogSchema.findByIdAndUpdate({ _id:req.params.id }, datas, { new: true })
+    // if (req.file) {
+    //     datas.image = req.file
+    // }
+
+    BlogSchema.findByIdAndUpdate({ _id: req.params.id }, datas, { new: true })
         .then((result) => {
             res.json({
-                message: "User Data Updated",
+                message: "Blog Data Updated",
                 data: result
             })
         })
@@ -67,4 +85,4 @@ const DeleteBlog = (req, res) => {
         })
 }
 
-module.exports={AddBlog ,ViewAllBlogs ,EditBlog ,DeleteBlog}
+module.exports = { AddBlog, BlogImages, ViewAllBlogs, EditBlog, DeleteBlog }
