@@ -16,17 +16,17 @@ const BlogImages = multer({ storage: storage }).single("image");
 const AddBlog = (req, res) => {
     let Blog = new BlogSchema({
         Title: req.body.Title,
-        image: req.file.filename,
+        image: req.file,
         SubTitle: req.body.SubTitle,
         Discription: req.body.Discription,
-        UserId: req.params.id
+        UserId: req.body.UserId
     })
 
     Blog.save()
+    
         .then((result) => {
-            return BlogSchema.findById(result._id).populate('UserId')
-        })
-        .then((result) => {
+            BlogSchema.populate(result, { path: 'UserId' })
+
             res.json({
                 message: "Blog Added",
                 data: result
@@ -39,6 +39,7 @@ const AddBlog = (req, res) => {
 }
 const ViewAllBlogs = (req, res) => {
     BlogSchema.find()
+        .populate('UserId')
         .then((result) => {
             res.json({
                 message: "View All Blogs",
@@ -57,10 +58,6 @@ const EditBlog = (req, res) => {
         Discription: req.body.Discription,
         image: req.file
     }
-    // if (req.file) {
-    //     datas.image = req.file
-    // }
-
     BlogSchema.findByIdAndUpdate({ _id: req.params.id }, datas, { new: true })
         .then((result) => {
             res.json({
