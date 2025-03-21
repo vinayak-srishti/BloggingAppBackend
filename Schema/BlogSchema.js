@@ -5,7 +5,7 @@ const BlogSchema=new mongoose.Schema({
     image:{type:Object, required:true},
     SubTitle:{type:String, required:true},
     Discription:{type:String, required:true},
-    UserId:{type:mongoose.Schema.Types.ObjectId, ref:'Users', required:true}
+    UserId:{type:mongoose.Schema.Types.ObjectId, ref:'Users'}
 })
 
 module.exports=mongoose.model('Blogs',BlogSchema)

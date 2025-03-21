@@ -45,10 +45,14 @@ const UserLogin = (req, res) => {
 const ForgotPassword = (req, res) => {
     UserSchema.findOneAndUpdate({ Email: req.body.Email }, { Password: req.body.Password }, { new: true })
         .then((result) => {
-            res.json({
-                message: "Password Forgotted",
-                data: result
-            })
+            if (result) {
+                res.status(200).json({
+                    message: "Spotted User",
+                    data: result,
+                });
+            } else {
+                res.status(401).json({ message: "Invalid Userid" });
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -56,7 +60,7 @@ const ForgotPassword = (req, res) => {
 }
 
 const ViewAllUsers = (req, res) => {
-    UserSchema.find()
+    UserSchema.find({ isActive: true })
         .then((result) => {
             res.json({
                 message: "View All Users",
@@ -89,7 +93,7 @@ const EditUser = (req, res) => {
         PhoneNo: req.body.PhoneNo,
         DOB: req.body.DOB
     }
-    UserSchema.findByIdAndUpdate({ _id: req.body.id }, datas, { new: true })
+    UserSchema.findByIdAndUpdate(req.params.id, datas, { new: true })
         .then((result) => {
             res.json({
                 message: "User Data Updated",
@@ -102,7 +106,7 @@ const EditUser = (req, res) => {
 }
 
 const DeleteUser = (req, res) => {
-    UserSchema.findByIdAndUpdate({ _id: req.body.id }, { isActive: false })
+    UserSchema.findByIdAndUpdate(req.body.id, { isActive: false })
         .then((result) => {
             res.json({
                 message: "User Deleted",

@@ -1,14 +1,16 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const path = require('path')
 const app = express()
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const path = require('path')
+app.use(cors())
+
 const PORT= 3002
 const DB = require('./Database')
 app.use(bodyParser.json())
 const BlogRoute =require('../BlogRoute')
 app.use('/Blog',BlogRoute)
-
-app.use(express.static(`${__dirname}/upload`));
+app.use('/upload', express.static(path.join(__dirname,'upload')));
 
 
 app.listen(PORT,()=>{
